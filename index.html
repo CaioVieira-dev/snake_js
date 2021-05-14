@@ -14,13 +14,56 @@
 <body>
     <header>
         <h2>Snake.js</h2>
-        <p>Utilize as teclas "w","a","s" e "d" para mudar a direção</p>
+        <p>Utilize as teclas "<strong id="label_input_up">W</strong>","<strong
+                id="label_input_left">A</strong>","<strong id="label_input_down">S</strong>" e "<strong
+                id="label_input_right">D</strong>"
+            para mudar a direção. Pressionar a tecla "<strong id="label_input_pause">Escape</strong>" pausa o jogo</p>
         <p id="score">Placar: <span>00</span></p>
     </header>
+    <div class="configButton">
+        <p>O</p>
+    </div>
+    <aside>
+
+        <h3><span>X</span> Configurações</h3>
+
+        <p>Velocidade <span id="reduceSpeed" class="__cursor_pointer">&lt&lt</span><strong
+                id="gameSpeed">5</strong><span id="increaseSpeed" class="__disabled">&gt&gt</span></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Comando</th>
+                    <th>Tecla</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Up</td>
+                    <td id="up" clicked="false">W</td>
+                </tr>
+                <tr>
+                    <td>Right</td>
+                    <td id="right" clicked="false">D</td>
+                </tr>
+                <tr>
+                    <td>Down</td>
+                    <td id="down" clicked="false">S</td>
+                </tr>
+                <tr>
+                    <td>Left</td>
+                    <td id="left" clicked="false">A</td>
+                </tr>
+                <tr>
+                    <td>Pause</td>
+                    <td id="pause" clicked="false">Escape</td>
+                </tr>
+            </tbody>
+        </table>
+    </aside>
 
     <main>
         <div id="fruit"></div>
-        <div id="player"></div>
+        <div id="player" dir="0"></div>
 
     </main>
 </body>

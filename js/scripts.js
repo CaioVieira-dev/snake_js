@@ -3,26 +3,118 @@ const field = document.querySelector('main')
 
 let id = 0;
 let timerId;
+
 board.addEventListener("keydown", keyListener);
+
+
 const App = {
     initGame() {
-        Player.setY("0%");
-        Player.setX("10%");
+        Player.setY("48%");
+        Player.setX("48%");
 
-        Fruit.setY("0%");
-        Fruit.setX("14%");
+        createNewFruit();
         startGameLoop();
     },
     pauseGame(interval) {
         clearInterval(interval);
-    }
+    },
+    unPause() {
+        startGameLoop();
+    },
+    state: "running"
+}
+const Configs = {
+    toggleConfigs() {
+        if (document.querySelector("aside").style.display == "block") {
+            document.querySelector("aside").style.display = "none"
+            App.unPause()
+            App.state = "running"
+        } else {
+            document.querySelector("aside").style.display = "block"
+            App.pauseGame(timerId)
+            App.state = "paused"
+        }
+    },
+    setup() {
+        document.querySelector(".configButton p").addEventListener('click', Configs.toggleConfigs)
+        document.querySelector("aside h3 span").addEventListener('click', Configs.toggleConfigs)
+        document.querySelector("#up").addEventListener('click', () => { document.querySelector("#up").setAttribute("clicked", "true") })
+        document.querySelector("#down").addEventListener('click', () => { document.querySelector("#down").setAttribute("clicked", "true") })
+        document.querySelector("#left").addEventListener('click', () => { document.querySelector("#left").setAttribute("clicked", "true") })
+        document.querySelector("#right").addEventListener('click', () => { document.querySelector("#right").setAttribute("clicked", "true") })
+        document.querySelector("#pause").addEventListener('click', () => { document.querySelector("#pause").setAttribute("clicked", "true") })
+
+        document.querySelector("#reduceSpeed").addEventListener('click', Configs.speedDown)
+        document.querySelector("#increaseSpeed").addEventListener('click', Configs.speedUp)
+    },
+    rebindKey(key, newKey) {
+        switch (key) {
+            case 'up':
+                Configs.keyUp = newKey.code
+
+                break;
+            case 'down':
+                Configs.keyDown = newKey.code
+                break;
+            case 'left':
+                Configs.keyLeft = newKey.code
+                break;
+            case 'right':
+                Configs.keyRight = newKey.code
+                break;
+            case 'pause':
+                Configs.keyPause = newKey.code
+                break;
+        }
+        console.log(newKey)
+    },
+    speedUp() {
+        if (Configs.gameSpeed == 5) {
+            return
+        }
+        if (Configs.gameSpeed == 0) {
+            document.querySelector("#reduceSpeed").classList.remove("__disabled")
+            document.querySelector("#reduceSpeed").classList.add("__cursor_pointer")
+        }
+        Configs.gameSpeed++;
+        document.querySelector("#gameSpeed").innerHTML = Configs.gameSpeed;
+        if (Configs.gameSpeed == 5) {
+            document.querySelector("#increaseSpeed").classList.add("__disabled")
+            document.querySelector("#increaseSpeed").classList.remove("__cursor_pointer")
+        }
+    },
+    speedDown() {
+        if (Configs.gameSpeed == 0) {
+            return
+        }
+        if (Configs.gameSpeed == 5) {
+            document.querySelector("#increaseSpeed").classList.remove("__disabled")
+            document.querySelector("#increaseSpeed").classList.add("__cursor_pointer")
+        }
+        Configs.gameSpeed--;
+        document.querySelector("#gameSpeed").innerHTML = Configs.gameSpeed;
+        if (Configs.gameSpeed == 0) {
+            document.querySelector("#reduceSpeed").classList.add("__disabled")
+            document.querySelector("#reduceSpeed").classList.remove("__cursor_pointer")
+        }
+    },
+
+    keyUp: "KeyW",
+    keyRight: "KeyD",
+    keyDown: "KeyS",
+    keyLeft: "KeyA",
+    keyPause: "Escape",
+    gameSpeed: 5
+
 }
 
+
 function startGameLoop() {
+    let time = 650 - (Configs.gameSpeed * 100)
     timerId = setInterval(() => {
         playerMove()
 
-    }, 150);
+    }, time);
 }
 
 const Player = {
@@ -44,7 +136,7 @@ const Player = {
         document.querySelector('#player').style.top = newY
     },
     size: 1,
-    dir: 0, //1 cima, 2 direita, 3 baixo, 4 esquerda, 0 not started
+    // dir: 0, //1 cima, 2 direita, 3 baixo, 4 esquerda, 0 not started
 }
 
 
@@ -104,7 +196,7 @@ function moveBody() {
                 //nesse caso dir = 0
                 if (part.getAttribute("dir") == 0) {
                     //se não tem direção pegue a do player
-                    part.setAttribute("dir", Player.dir)
+                    part.setAttribute("dir", document.querySelector("#player").getAttribute("dir"))
                 } else {
                     //caso tenha direção
                     //atualize e vá para proxima posição
@@ -130,7 +222,7 @@ function moveBody() {
                     if (part.getAttribute("dir") == 4) {
                         part.style.left = `${partLeft - 2}%`
                     }
-                    part.setAttribute("dir", Player.dir)
+                    part.setAttribute("dir", document.querySelector("#player").getAttribute("dir"))
                 }
                 continue;
             }
@@ -184,53 +276,53 @@ function moveHead() {
     let actualPositionY = Player.getY();
 
 
-    if (Player.dir == 1) {
+    if (document.querySelector("#player").getAttribute("dir") == 1) {
         let actualPosition = Number(Player.getY().replace("%", ""))
         //player.style.top = actualPosition - 2 < 0 ? player.style.top : `${actualPosition - 2}%`
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         Player.setY(`${actualPosition - 2}%`);
 
         if (colidedWithFruit()) {
-            increaseSize(actualPositionX, actualPositionY, Player.dir)
+            increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
 
     }
 
 
-    if (Player.dir == 4) {
+    if (document.querySelector("#player").getAttribute("dir") == 4) {
         let actualPosition = Number(Player.getX().replace("%", ""))
         //player.style.left = actualPosition - 2 < 0 ? player.style.left : `${actualPosition - 2}%`
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         Player.setX(`${actualPosition - 2}%`)
 
         if (colidedWithFruit()) {
-            increaseSize(actualPositionX, actualPositionY, Player.dir)
+            increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
 
 
     }
 
 
-    if (Player.dir == 3) {
+    if (document.querySelector("#player").getAttribute("dir") == 3) {
         let actualPosition = Number(Player.getY().replace("%", ""))
         //player.style.top = actualPosition + 2 > 98 ? player.style.top : `${actualPosition + 2}%`
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         Player.setY(`${actualPosition + 2}%`)
 
         if (colidedWithFruit()) {
-            increaseSize(actualPositionX, actualPositionY, Player.dir)
+            increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
 
     }
 
-    if (Player.dir == 2) {
+    if (document.querySelector("#player").getAttribute("dir") == 2) {
         let actualPosition = Number(Player.getX().replace("%", ""))
         //player.style.left = actualPosition + 2 > 98 ? player.style.left : `${actualPosition + 2}%`
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         Player.setX(`${actualPosition + 2}%`)
 
         if (colidedWithFruit()) {
-            increaseSize(actualPositionX, actualPositionY, Player.dir)
+            increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
 
 
@@ -259,7 +351,7 @@ function isGameOver() {
         //console.log("elementX:", elementX, "\n", Player.getX())
         //console.log(Player.getX() == elementX && Player.getY == elementY)
         if (Player.getX() == elementX && Player.getY() == elementY) {
-            console.log('corpoa')
+            //console.log(field.children.item(i).id)
             return true
         }
     }
@@ -306,19 +398,29 @@ function keyListener(e) {
     // let actualPositionX = Player.getX();
     // let actualPositionY = Player.getY();
 
-    if (e.code == "Escape") {
-        App.pauseGame(timerId)
+    if (document.querySelector("aside").style.display != "block") {
+        if (e.code == Configs.keyPause) {
+            if (App.state == "running") {
+                App.state = "paused"
+                App.pauseGame(timerId)
+            }
+            else {
+                App.unPause()
+                App.state = 'running'
+            }
+        }
     }
-    if (e.code == "KeyW") {
+    if (e.code == Configs.keyUp) {
 
         // let actualPosition = Number(Player.getY().replace("%", ""))
         //player.style.top = actualPosition - 2 < 0 ? player.style.top : `${actualPosition - 2}%`
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         //    Player.setY(`${actualPosition - 2}%`);
 
-        if (Player.dir != 3) {
-            Player.dir = 1;
+        if (document.querySelector("#player").getAttribute("dir") != 3) {
+            document.querySelector("#player").setAttribute("dir", 1)
         }
+
 
 
         /*
@@ -332,13 +434,13 @@ function keyListener(e) {
         //}
 
     }
-    if (e.code == "KeyA") {
+    if (e.code == Configs.keyLeft) {
         // let actualPosition = Number(Player.getX().replace("%", ""))
         //player.style.left = actualPosition - 2 < 0 ? player.style.left : `${actualPosition - 2}%`
         // if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         //     Player.setX(`${actualPosition - 2}%`)
-        if (Player.dir != 2) {
-            Player.dir = 4;
+        if (document.querySelector("#player").getAttribute("dir") != 2) {
+            document.querySelector("#player").setAttribute("dir", 4);
         }
 
         //     if (colidedWithFruit()) {
@@ -348,14 +450,13 @@ function keyListener(e) {
 
         //}
     }
-
-    if (e.code == "KeyS") {
+    if (e.code == Configs.keyDown) {
         //  let actualPosition = Number(Player.getY().replace("%", ""))
         //player.style.top = actualPosition + 2 > 98 ? player.style.top : `${actualPosition + 2}%`
         //  if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         //    Player.setY(`${actualPosition + 2}%`)
-        if (Player.dir != 1) {
-            Player.dir = 3;
+        if (document.querySelector("#player").getAttribute("dir") != 1) {
+            document.querySelector("#player").setAttribute("dir", 3)
         }
         //    if (colidedWithFruit()) {
         //        increaseSize(actualPositionX, actualPositionY, Player.dir)
@@ -363,13 +464,13 @@ function keyListener(e) {
         //    playerMove();
         //  }
     }
-    if (e.code == "KeyD") {
+    if (e.code == Configs.keyRight) {
         //let actualPosition = Number(Player.getX().replace("%", ""))
         //player.style.left = actualPosition + 2 > 98 ? player.style.left : `${actualPosition + 2}%`
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         //    Player.setX(`${actualPosition + 2}%`)
-        if (Player.dir != 4) {
-            Player.dir = 2;
+        if (document.querySelector("#player").getAttribute("dir") != 4) {
+            document.querySelector("#player").setAttribute("dir", 2)
         }
         //   if (colidedWithFruit()) {
         //       increaseSize(actualPositionX, actualPositionY, Player.dir)
@@ -378,9 +479,50 @@ function keyListener(e) {
 
         //   }
     }
+
+    const up = document.querySelector("#up")
+    const down = document.querySelector("#down")
+    const left = document.querySelector("#left")
+    const right = document.querySelector("#right")
+    const pause = document.querySelector("#pause")
+
+    if (up.getAttribute("clicked") == "true") {
+        up.setAttribute("clicked", "false")
+        up.innerHTML = e.key.toUpperCase()
+        document.querySelector("#label_input_up").innerHTML = e.key.toUpperCase()
+        Configs.rebindKey("up", e)
+    }
+    if (down.getAttribute("clicked") == "true") {
+        down.setAttribute("clicked", "false")
+        down.innerHTML = e.key.toUpperCase()
+        document.querySelector("#label_input_down").innerHTML = e.key.toUpperCase()
+        Configs.rebindKey("down", e)
+
+    }
+    if (left.getAttribute("clicked") == "true") {
+        left.setAttribute("clicked", "false")
+        left.innerHTML = e.key.toUpperCase()
+        document.querySelector("#label_input_left").innerHTML = e.key.toUpperCase()
+        Configs.rebindKey("left", e)
+
+    }
+    if (right.getAttribute("clicked") == "true") {
+        right.setAttribute("clicked", "false")
+        right.innerHTML = e.key.toUpperCase()
+        document.querySelector("#label_input_right").innerHTML = e.key.toUpperCase()
+        Configs.rebindKey("right", e)
+
+    }
+    if (pause.getAttribute("clicked") == "true") {
+        pause.setAttribute("clicked", "false")
+        pause.innerHTML = e.code.toUpperCase()
+        document.querySelector("#label_input_pause").innerHTML = e.code.toUpperCase()
+        Configs.rebindKey("pause", e)
+    }
 }
 
 document.querySelector('#score span').innerHTML = (Player.size - 1) * 10
 
 
+Configs.setup()
 App.initGame();
