@@ -281,6 +281,7 @@ function moveHead() {
         //player.style.top = actualPosition - 2 < 0 ? player.style.top : `${actualPosition - 2}%`
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         Player.setY(`${actualPosition - 2}%`);
+        document.querySelector("#player").setAttribute("lastDir", 1)
 
         if (colidedWithFruit()) {
             increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
@@ -294,6 +295,7 @@ function moveHead() {
         //player.style.left = actualPosition - 2 < 0 ? player.style.left : `${actualPosition - 2}%`
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         Player.setX(`${actualPosition - 2}%`)
+        document.querySelector("#player").setAttribute("lastDir", 4)
 
         if (colidedWithFruit()) {
             increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
@@ -309,6 +311,7 @@ function moveHead() {
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         Player.setY(`${actualPosition + 2}%`)
 
+        document.querySelector("#player").setAttribute("lastDir", 3)
         if (colidedWithFruit()) {
             increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
@@ -321,6 +324,7 @@ function moveHead() {
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         Player.setX(`${actualPosition + 2}%`)
 
+        document.querySelector("#player").setAttribute("lastDir", 2)
         if (colidedWithFruit()) {
             increaseSize(actualPositionX, actualPositionY, document.querySelector("#player").getAttribute("dir"))
         }
@@ -417,7 +421,7 @@ function keyListener(e) {
         //if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         //    Player.setY(`${actualPosition - 2}%`);
 
-        if (document.querySelector("#player").getAttribute("dir") != 3) {
+        if (document.querySelector("#player").getAttribute("lastDir") != 3) {
             document.querySelector("#player").setAttribute("dir", 1)
         }
 
@@ -439,7 +443,7 @@ function keyListener(e) {
         //player.style.left = actualPosition - 2 < 0 ? player.style.left : `${actualPosition - 2}%`
         // if (actualPosition - 2 < 0) { ""/*perder jogo*/ } else {
         //     Player.setX(`${actualPosition - 2}%`)
-        if (document.querySelector("#player").getAttribute("dir") != 2) {
+        if (document.querySelector("#player").getAttribute("lastDir") != 2) {
             document.querySelector("#player").setAttribute("dir", 4);
         }
 
@@ -455,7 +459,7 @@ function keyListener(e) {
         //player.style.top = actualPosition + 2 > 98 ? player.style.top : `${actualPosition + 2}%`
         //  if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         //    Player.setY(`${actualPosition + 2}%`)
-        if (document.querySelector("#player").getAttribute("dir") != 1) {
+        if (document.querySelector("#player").getAttribute("lastDir") != 1) {
             document.querySelector("#player").setAttribute("dir", 3)
         }
         //    if (colidedWithFruit()) {
@@ -469,7 +473,7 @@ function keyListener(e) {
         //player.style.left = actualPosition + 2 > 98 ? player.style.left : `${actualPosition + 2}%`
         //if (actualPosition + 2 > 98) { ""/*perder jogo*/ } else {
         //    Player.setX(`${actualPosition + 2}%`)
-        if (document.querySelector("#player").getAttribute("dir") != 4) {
+        if (document.querySelector("#player").getAttribute("lastDir") != 4) {
             document.querySelector("#player").setAttribute("dir", 2)
         }
         //   if (colidedWithFruit()) {
