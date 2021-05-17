@@ -90,15 +90,45 @@ const Configs = {
             App.pauseGame(timerId)
             App.state = "paused"
         }
+    }, toggleLeaderboard() {
+        if (document.querySelector("#leaderboard").style.display == "block") {
+            document.querySelector("#leaderboard").style.display = "none"
+            App.unPause()
+            App.state = "running"
+        } else {
+            document.querySelector("#leaderboard").style.display = "block"
+            App.pauseGame(timerId)
+            App.state = "paused"
+        }
+    }, rebindSelector(id) {
+        //verificar se algum ja foi clicado
+        //se tiver um pronto para trocar saia da função
+        const functionKeys = document.querySelectorAll("aside table tr td:last-child")
+        let canSetRebindMode = true
+        for (let i = 0; i < functionKeys.length; i++) {
+            if (functionKeys.item(i).getAttribute("clicked") == "true") {
+                canSetRebindMode = false;
+                break;
+            }
+        }
+
+
+        if (canSetRebindMode) {
+            document.querySelector(id).setAttribute("clicked", "true");
+        }
     },
     setup() {
-        document.querySelector(".configButton p i").addEventListener('click', Configs.toggleConfigs)
+        document.querySelector(".configButton p").addEventListener('click', Configs.toggleConfigs)
         document.querySelector("aside h3 span").addEventListener('click', Configs.toggleConfigs)
-        document.querySelector("#up").addEventListener('click', () => { document.querySelector("#up").setAttribute("clicked", "true") })
-        document.querySelector("#down").addEventListener('click', () => { document.querySelector("#down").setAttribute("clicked", "true") })
-        document.querySelector("#left").addEventListener('click', () => { document.querySelector("#left").setAttribute("clicked", "true") })
-        document.querySelector("#right").addEventListener('click', () => { document.querySelector("#right").setAttribute("clicked", "true") })
-        document.querySelector("#pause").addEventListener('click', () => { document.querySelector("#pause").setAttribute("clicked", "true") })
+        document.querySelector(".leaderboard-overlay-button").addEventListener('click', Configs.toggleLeaderboard)
+        document.querySelector("#leaderboard h3 span").addEventListener('click', Configs.toggleLeaderboard)
+
+
+        document.querySelector("#up").addEventListener('click', () => { Configs.rebindSelector("#up") })
+        document.querySelector("#down").addEventListener('click', () => { Configs.rebindSelector("#down") })
+        document.querySelector("#left").addEventListener('click', () => { Configs.rebindSelector("#left") })
+        document.querySelector("#right").addEventListener('click', () => { Configs.rebindSelector("#right") })
+        document.querySelector("#pause").addEventListener('click', () => { Configs.rebindSelector("#pause") })
 
         document.querySelector("#reduceSpeed").addEventListener('click', Configs.speedDown)
         document.querySelector("#increaseSpeed").addEventListener('click', Configs.speedUp)
@@ -122,7 +152,7 @@ const Configs = {
                 Configs.keyPause = newKey.code
                 break;
         }
-        console.log(newKey)
+        // console.log(newKey)
     },
     speedUp() {
         if (Configs.gameSpeed == 5) {

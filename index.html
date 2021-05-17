@@ -13,12 +13,13 @@
 </head>
 
 <body>
-    <header>
+    <header class="center">
         <h2>Snake.js</h2>
         <p>Utilize as teclas "<strong id="label_input_up">W</strong>","<strong
                 id="label_input_left">A</strong>","<strong id="label_input_down">S</strong>" e "<strong
                 id="label_input_right">D</strong>"
-            para mudar a direção. Pressionar a tecla "<strong id="label_input_pause">Escape</strong>" pausa o jogo</p>
+            para mudar a direção. <br> Pressionar a tecla "<strong id="label_input_pause">Escape</strong>" pausa o jogo
+        </p>
         <p id="score">Placar: <span>00</span></p>
     </header>
     <div class="configButton">
@@ -67,9 +68,12 @@
         <input type="text" name="playerName" id="playerName">
         <button>Salvar Placar</button>
     </form>
+    <div class="leaderboard-overlay-button ">
+        <i class="fas fa-bars"></i>
+    </div>
     <section id="leaderboard">
 
-        <h3>Melhores Jogadores</h3>
+        <h3><span>X</span> Jogos Passados</h3>
         <table>
             <thead>
                 <tr>
